@@ -22,18 +22,6 @@ A Chrome browser extension to track your daily LeetCode problem-solving progress
 4. **Click "Load unpacked"** and select the folder containing this extension
 5. **Pin the extension** to your toolbar for easy access
 
-### Method 2: Create Icons (Required)
-
-Before loading the extension, you need to create actual PNG icon files:
-
-- Replace `icons/icon16.png` with a 16x16 pixel PNG icon
-- Replace `icons/icon48.png` with a 48x48 pixel PNG icon  
-- Replace `icons/icon128.png` with a 128x128 pixel PNG icon
-
-You can create simple icons using:
-- Online icon generators (like favicon.io)
-- Image editing software (GIMP, Photoshop, etc.)
-- AI image generators with appropriate prompts
 
 ## Usage
 
