@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>LeetCode Weekly Tracker</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h1>LeetCode Tracker</h1>
+    <div class="goal-section">
+      <h2>Weekly Goal: 50 Problems</h2>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-text">
+        <span id="currentCount">0</span> / 50 problems completed
+      </div>
+    </div>
+    
+    <div class="weekly-grid">
+      <div class="day-header">Mon</div>
+      <div class="day-header">Tue</div>
+      <div class="day-header">Wed</div>
+      <div class="day-header">Thu</div>
+      <div class="day-header">Fri</div>
+      <div class="day-header">Sat</div>
+      <div class="day-header">Sun</div>
+      
+      <div class="day-cell" data-day="monday">
+        <span class="problem-count" id="monday-count">0</span>
+        <button class="add-btn" data-day="monday">+</button>
+        <button class="subtract-btn" data-day="monday">-</button>
+      </div>
+      <div class="day-cell" data-day="tuesday">
+        <span class="problem-count" id="tuesday-count">0</span>
+        <button class="add-btn" data-day="tuesday">+</button>
+        <button class="subtract-btn" data-day="tuesday">-</button>
+      </div>
+      <div class="day-cell" data-day="wednesday">
+        <span class="problem-count" id="wednesday-count">0</span>
+        <button class="add-btn" data-day="wednesday">+</button>
+        <button class="subtract-btn" data-day="wednesday">-</button>
+      </div>
+      <div class="day-cell" data-day="thursday">
+        <span class="problem-count" id="thursday-count">0</span>
+        <button class="add-btn" data-day="thursday">+</button>
+        <button class="subtract-btn" data-day="thursday">-</button>
+      </div>
+      <div class="day-cell" data-day="friday">
+        <span class="problem-count" id="friday-count">0</span>
+        <button class="add-btn" data-day="friday">+</button>
+        <button class="subtract-btn" data-day="friday">-</button>
+      </div>
+      <div class="day-cell" data-day="saturday">
+        <span class="problem-count" id="saturday-count">0</span>
+        <button class="add-btn" data-day="saturday">+</button>
+        <button class="subtract-btn" data-day="saturday">-</button>
+      </div>
+      <div class="day-cell" data-day="sunday">
+        <span class="problem-count" id="sunday-count">0</span>
+        <button class="add-btn" data-day="sunday">+</button>
+        <button class="subtract-btn" data-day="sunday">-</button>
+      </div>
+    </div>
+    
+    <div class="controls">
+      <button id="resetWeek" class="reset-btn">Reset Week</button>
+      <button id="autoDetect" class="auto-btn">Auto-detect from LeetCode</button>
+      <button id="refreshData" class="refresh-btn">Refresh Data</button>
+    </div>
+    
+    <div class="status" id="status"></div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html> 

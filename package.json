@@ -1,0 +1,34 @@
+{
+  "name": "leetcode-weekly-tracker",
+  "version": "1.0.0",
+  "description": "A Chrome extension to track daily LeetCode problem-solving progress with a weekly goal of 50 problems",
+  "main": "popup.js",
+  "scripts": {
+    "build": "echo 'Extension built successfully. Load the folder in Chrome extensions.'",
+    "test": "echo 'No tests specified'",
+    "lint": "echo 'No linter configured'"
+  },
+  "keywords": [
+    "leetcode",
+    "chrome-extension",
+    "progress-tracker",
+    "coding",
+    "algorithms",
+    "problems"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/leetcode-weekly-tracker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/leetcode-weekly-tracker/issues"
+  },
+  "homepage": "https://github.com/yourusername/leetcode-weekly-tracker#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+} 
