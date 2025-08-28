@@ -15,8 +15,20 @@ class LeetCodeTracker {
 
   getCurrentWeek() {
     const now = new Date();
+    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    
+    // Calculate days to subtract to get to Monday
+    // If today is Sunday (0), subtract 6 days to get to last Monday
+    // If today is Monday (1), subtract 0 days
+    // If today is Tuesday (2), subtract 1 day, etc.
+    const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    
     const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Monday = 1
+    startOfWeek.setDate(now.getDate() - daysToSubtract);
+    
+    // Set time to start of day to ensure consistent comparison
+    startOfWeek.setHours(0, 0, 0, 0);
+    
     return startOfWeek.toISOString().split('T')[0];
   }
 
@@ -26,7 +38,14 @@ class LeetCodeTracker {
       const result = await chrome.storage.local.get(['weekData', 'currentWeek']);
       console.log('Loaded data:', result);
       
-      if (result.currentWeek !== this.currentWeek) {
+      const storedWeek = result.currentWeek;
+      console.log('Week comparison:', {
+        storedWeek: storedWeek,
+        currentWeek: this.currentWeek,
+        needsReset: storedWeek !== this.currentWeek
+      });
+      
+      if (storedWeek !== this.currentWeek) {
         // New week, reset data
         console.log('New week detected, resetting data');
         this.weekData = this.getDefaultWeekData();
@@ -102,6 +121,16 @@ class LeetCodeTracker {
     document.getElementById('refreshData').addEventListener('click', () => {
       this.refreshData();
     });
+    
+    // Debug week button
+    document.getElementById('debugWeek').addEventListener('click', () => {
+      this.debugWeekCalculation();
+    });
+    
+    // View previous week button
+    document.getElementById('viewPrevious').addEventListener('click', () => {
+      this.viewPreviousWeekData();
+    });
   }
 
   async updateProblemCount(day, change) {
@@ -168,6 +197,24 @@ class LeetCodeTracker {
         progressFillElement.style.background = 'linear-gradient(90deg, #4CAF50, #45a049)';
       }
     }
+    
+    // Add week information for debugging
+    this.updateWeekInfo();
+  }
+  
+  updateWeekInfo() {
+    // Add week information to help with debugging
+    const weekInfoElement = document.getElementById('weekInfo');
+    if (weekInfoElement) {
+      const now = new Date();
+      const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const currentDayName = dayNames[now.getDay()];
+      
+      weekInfoElement.innerHTML = `
+        <small>Current Week: ${this.currentWeek}</small><br>
+        <small>Today: ${currentDayName}</small>
+      `;
+    }
   }
 
   async resetWeek() {
@@ -232,6 +279,67 @@ class LeetCodeTracker {
     await this.loadWeekData();
     this.updateDisplay();
     this.showStatus('Data refreshed!', 'success');
+  }
+  
+  // Debug function to show week calculation details
+  debugWeekCalculation() {
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - daysToSubtract);
+    startOfWeek.setHours(0, 0, 0, 0);
+    
+    const debugInfo = {
+      currentDate: now.toISOString(),
+      dayOfWeek: dayOfWeek,
+      dayName: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek],
+      daysToSubtract: daysToSubtract,
+      calculatedStartOfWeek: startOfWeek.toISOString(),
+      currentWeekIdentifier: this.currentWeek
+    };
+    
+    console.log('Week calculation debug:', debugInfo);
+    this.showStatus(`Debug: Week starts ${debugInfo.dayName} (${debugInfo.calculatedStartOfWeek})`, 'info');
+    
+    return debugInfo;
+  }
+  
+  // Function to view previous week data
+  async viewPreviousWeekData() {
+    try {
+      // Get all storage keys to find previous week data
+      const result = await chrome.storage.local.get(null);
+      const previousWeeks = [];
+      
+      Object.keys(result).forEach(key => {
+        if (key.startsWith('weekData_') && key !== 'weekData') {
+          const weekDate = key.replace('weekData_', '');
+          previousWeeks.push({
+            week: weekDate,
+            data: result[key]
+          });
+        }
+      });
+      
+      if (previousWeeks.length > 0) {
+        console.log('Previous week data found:', previousWeeks);
+        let message = `Found ${previousWeeks.length} previous week(s): `;
+        previousWeeks.forEach(week => {
+          const totalProblems = Object.values(week.data).reduce((sum, count) => sum + count, 0);
+          message += `\nWeek ${week.week}: ${totalProblems} problems`;
+        });
+        this.showStatus(message, 'info');
+      } else {
+        this.showStatus('No previous week data found', 'info');
+      }
+      
+      return previousWeeks;
+    } catch (error) {
+      console.error('Error viewing previous week data:', error);
+      this.showStatus('Error viewing previous week data', 'error');
+      return [];
+    }
   }
 }
 

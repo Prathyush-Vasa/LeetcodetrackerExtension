@@ -3,8 +3,20 @@
 // Get current week (Monday as start)
 function getCurrentWeek() {
   const now = new Date();
+  const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+  
+  // Calculate days to subtract to get to Monday
+  // If today is Sunday (0), subtract 6 days to get to last Monday
+  // If today is Monday (1), subtract 0 days
+  // If today is Tuesday (2), subtract 1 day, etc.
+  const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  
   const startOfWeek = new Date(now);
-  startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Monday = 1
+  startOfWeek.setDate(now.getDate() - daysToSubtract);
+  
+  // Set time to start of day to ensure consistent comparison
+  startOfWeek.setHours(0, 0, 0, 0);
+  
   return startOfWeek.toISOString().split('T')[0];
 }
 
@@ -84,11 +96,29 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // Check if we need to reset the week
 function checkAndResetWeek() {
-  chrome.storage.local.get(['currentWeek'], (result) => {
+  chrome.storage.local.get(['currentWeek', 'weekData'], (result) => {
     const currentWeek = getCurrentWeek();
+    const storedWeek = result.currentWeek;
+    const storedWeekData = result.weekData;
     
-    if (result.currentWeek !== currentWeek) {
-      // New week, reset data
+    console.log('Checking week reset:', {
+      storedWeek: storedWeek,
+      currentWeek: currentWeek,
+      needsReset: storedWeek !== currentWeek,
+      hasExistingData: !!storedWeekData
+    });
+    
+    if (storedWeek !== currentWeek) {
+      // New week, but let's preserve the old data for backup
+      if (storedWeekData && storedWeek) {
+        console.log('Backing up previous week data:', storedWeekData);
+        // Store backup of previous week
+        chrome.storage.local.set({
+          [`weekData_${storedWeek}`]: storedWeekData
+        });
+      }
+      
+      // Reset data for new week
       const newWeekData = {
         monday: 0,
         tuesday: 0,
@@ -104,7 +134,28 @@ function checkAndResetWeek() {
         currentWeek: currentWeek
       });
       
-      console.log('Week reset to:', currentWeek);
+      console.log('Week reset to:', currentWeek, 'Previous week was:', storedWeek);
+    } else {
+      console.log('Same week, no reset needed. Current week:', currentWeek);
+      
+      // Ensure we have valid week data
+      if (!storedWeekData || Object.keys(storedWeekData).length === 0) {
+        console.log('No valid week data found, initializing defaults');
+        const defaultWeekData = {
+          monday: 0,
+          tuesday: 0,
+          wednesday: 0,
+          thursday: 0,
+          friday: 0,
+          saturday: 0,
+          sunday: 0
+        };
+        
+        chrome.storage.local.set({
+          weekData: defaultWeekData,
+          currentWeek: currentWeek
+        });
+      }
     }
   });
 }

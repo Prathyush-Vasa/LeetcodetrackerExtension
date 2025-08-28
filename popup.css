@@ -61,6 +61,21 @@ h1 {
   font-weight: 500;
 }
 
+.week-info {
+  text-align: center;
+  margin-top: 10px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.week-info small {
+  display: block;
+  margin: 2px 0;
+}
+
 .weekly-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -128,7 +143,7 @@ h1 {
   flex-wrap: wrap;
 }
 
-.reset-btn, .auto-btn {
+.reset-btn, .auto-btn, .refresh-btn, .debug-btn, .previous-btn {
   flex: 1;
   padding: 12px;
   border: none;
@@ -152,6 +167,14 @@ h1 {
 
 .refresh-btn:hover {
   background: #9C27B0;
+}
+
+.debug-btn:hover {
+  background: #FF9800;
+}
+
+.previous-btn:hover {
+  background: #607D8B;
 }
 
 .status {
